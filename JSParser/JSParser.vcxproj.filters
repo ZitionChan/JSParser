@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="源文件\Lexer">
+      <UniqueIdentifier>{f0ef469a-704e-4d81-8837-58a630152bf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Lexer">
+      <UniqueIdentifier>{7f5fb018-411c-4118-b91a-7e929e7c82db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Parser">
+      <UniqueIdentifier>{6de52500-f833-4291-b961-11a2a1bcab82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Parser">
+      <UniqueIdentifier>{7f108a1f-91e9-4673-8efa-b40378fd35c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Node">
+      <UniqueIdentifier>{4980739c-420d-4e4a-8e6d-0c01eda3ead7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Lexer.cpp">
+      <Filter>源文件\Lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="Word.cpp">
+      <Filter>源文件\Lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser.cpp">
+      <Filter>源文件\Parser</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Lexer.h">
+      <Filter>头文件\Lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="Word.h">
+      <Filter>头文件\Lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="Token.h">
+      <Filter>头文件\Lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="Tag.h">
+      <Filter>头文件\Lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="Number.h">
+      <Filter>头文件\Lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser.h">
+      <Filter>头文件\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="LexicalEnvironment.h">
+      <Filter>头文件\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Expr.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryExpr.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="UnaryExpr.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Literal.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Stmt.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockStmt.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Decl.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Identifier.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="ASTNode.h">
+      <Filter>头文件\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Program.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="VariableDecl.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
