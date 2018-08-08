@@ -3,8 +3,10 @@
 
 class Node {
 protected:
-	int lexline;
+	//int lexline;
 public:
-	Node();
-	virtual void display(){}
+	Node() {};
+	virtual void display(){
+		cout << "one node" << endl;
+	}
 };

@@ -8,7 +8,12 @@ protected:
 public:
 	Literal(double v):value(v){}
 
-	double value() {
+	double getValue() {
 		return value;
+	}
+
+	void display() {
+		cout << "Literal:" << endl;
+		cout << "value:" << value << endl;
 	}
 };

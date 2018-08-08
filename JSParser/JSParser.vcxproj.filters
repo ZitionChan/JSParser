@@ -104,5 +104,11 @@
     <ClInclude Include="VariableDecl.h">
       <Filter>头文件\Node</Filter>
     </ClInclude>
+    <ClInclude Include="StringConstant.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="AllNodes.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

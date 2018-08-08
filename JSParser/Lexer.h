@@ -19,9 +19,11 @@ class Lexer {
 	void initReserve(); //初始化保留字
 	void ignoreSpace();
 	void ignoreComment();
+	string readStringConstant();
 public:
 	static int line; //当前行数
 	Lexer(ifstream* is);
+	bool eof(); //判断是否结束
 	Token* scan(); //读取一个token
 	char getPeek() {
 		return peek;

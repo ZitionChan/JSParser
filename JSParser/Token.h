@@ -23,6 +23,10 @@ public:
 		return toStr(c);
 	}
 
+	virtual double getValue() {
+		throw "Class Token don't have getValue()";
+	}
+
 };
 
 

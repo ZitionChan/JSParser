@@ -12,4 +12,17 @@ public:
 		
 	}
 
+	void display() {
+		cout << "VariableDeclarator:" << endl;
+		cout << "	id:"<<endl; 
+		id->display();
+		cout << "	init:" << endl;
+		if (init) {
+			init->display();
+		}
+		else {
+			cout << "		null" << endl;
+		}
+	}
+
 };

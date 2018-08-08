@@ -1,5 +1,3 @@
-var a ;
-
-
-
-
+var a ="test string";
+var test = a ;
+var a = ;

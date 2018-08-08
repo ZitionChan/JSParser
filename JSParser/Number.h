@@ -14,6 +14,10 @@ public:
 	Number(double v):Token(NUMBER),value(v) {
 	}
 
+	double getValue() {
+		return value;
+	}
+
 	string toString() {
 		return toStr(value);
 	}

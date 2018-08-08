@@ -2,10 +2,9 @@
 #include"Number.h"
 #include"Tag.h"
 
-
 int Lexer::line = 1;
 
-Lexer::Lexer(ifstream* is):peek(' '),reader(is) {
+Lexer::Lexer(ifstream* is):peek(' '),reader(is),isStringConstant(false) {
 	initReserve();//¼ÓÔØ±£Áô×Ö
 }
 
@@ -25,7 +24,6 @@ bool Lexer::readch(char c) {
 	peek = ' ';
 	return true;
 }
-
 
 //Ô¤ÔØ±£Áô×Ö
 void Lexer::initReserve() {
@@ -112,9 +110,8 @@ void Lexer::initReserve() {
 	reserve(new Word("valueOf", VALUEOF));
 }
 
-
 void Lexer::ignoreSpace() {
-	for (;; readch()) {
+	for (;!eof(); readch()) {
 		if (peek == ' ' || peek == '\t') continue;
 		else if (peek == '\n') line = line + 1;
 		else break;
@@ -124,20 +121,28 @@ void Lexer::ignoreSpace() {
 void Lexer::ignoreComment() {
 	if (peek == '/') {
 		if (readch('*')) {
-			for (;;) {
+			for (;!eof();) {
 				readch();
 				if (peek == '*'&&readch('/')) break;
 			}
 		}
 	}
 }
+
 Token* Lexer::scan() {
+	if (isStringConstant&&peek!='\''&&peek!='\"') {
+		string stringconstant = readStringConstant();
+		return new Word(stringconstant, STRING);
+	}
+
 	do {
 		//ºöÂÔ¿Õ¸ñ
 		ignoreSpace();
 		//ºöÂÔ×¢ÊÍ
 		ignoreComment();
-	} while (peek == ' '||peek == '\t'||peek == '\n');
+		if (eof()) return nullptr;
+
+	} while (peek == ' '||peek == '\t'||peek == '\n' );
 
 	switch (peek)
 	{
@@ -161,11 +166,11 @@ Token* Lexer::scan() {
 		else return new Token('>');
 	case '\'':
 		isStringConstant = !isStringConstant;
-		peek = ' ';
+		readch();
 		return new Token('\'');
 	case '\"':
 		isStringConstant = !isStringConstant;
-		peek = ' ';
+		readch();
 		return new Token('\"');
 	default:
 		break;
@@ -214,3 +219,16 @@ Token* Lexer::scan() {
 	return tok;
 }
 
+string Lexer::readStringConstant() {
+	stringstream ss;
+	while (peek != '\"' && peek!='\'') {
+		ss << peek;
+		readch();
+	}
+
+	return ss.str();
+}
+
+bool Lexer::eof() {
+	return reader->eof();
+}

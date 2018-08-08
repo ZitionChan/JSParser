@@ -121,6 +121,7 @@
     <ClCompile Include="Word.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AllNodes.h" />
     <ClInclude Include="ASTNode.h" />
     <ClInclude Include="BinaryExpr.h" />
     <ClInclude Include="BlockStmt.h" />
@@ -135,6 +136,7 @@
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Stmt.h" />
+    <ClInclude Include="StringConstant.h" />
     <ClInclude Include="Tag.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="UnaryExpr.h" />

@@ -8,26 +8,47 @@
 string path = "test.txt";
 
 ifstream ifile(path);
+
+void LexerTest(Lexer &lexer) {
+	while (!lexer.eof()){
+		Token* token = lexer.scan();
+		if (token) {
+			switch (token->tag) {
+			case NUMBER:
+				cout << "( NUMBER ," << token->toString() << " )" << endl; break;
+			case ID:
+				cout << "( ID ," << token->toString() << " )" << endl; break;
+			case IF:
+			case VAR:
+				cout << "( KEYWORD ," << token->toString() << " )" << endl; break;
+			case STRING:
+				cout << "(STRING, \'" << token->toString() << "\' )" << endl; break;
+			default:
+				cout << "( TOKEN ," << token->toString() << " )" << endl; break;
+			}
+		}
+	}
+}
+
+void ParserTest(Lexer &lexer) {
+	Parser parser(&lexer);
+	try {
+		parser.run();
+	}
+	catch (string err) {
+		cout << err << endl;
+	}
+	parser.display();
+}
+
 int main() {
 	Lexer lexer(&ifile);
-	Parser parser(&lexer);
+	
+	ParserTest(lexer);
+	//LexerTest(lexer);
 
-	parser.program();
-	/*do {
-		Token* token= lexer.scan();
-		switch (token->tag) {
-		case NUMBER:
-			cout << "( NUM ," << token->toString() << " )" << endl; break;
-		case ID:
-			cout << "( Identifier ," << token->toString() << " )" << endl; break;
-		case IF:
-			cout << "( KEY ," << token->toString() << " )" << endl; break;
-		default:
-			cout << "( TOKEN ," << token->toString() << " )" << endl; break;
-		}
-
-	} while (lexer.getPeek() != '\n'); */
 	system("pause");
 	return 0;
 
 }
+

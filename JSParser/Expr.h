@@ -1,5 +1,6 @@
 #pragma once
 #include"Node.h"
-class Expr :public Node {
-
+class Expr :virtual public Node {
+public:
+	Expr(){}
 };
