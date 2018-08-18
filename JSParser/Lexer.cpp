@@ -4,7 +4,7 @@
 
 int Lexer::line = 1;
 
-Lexer::Lexer(ifstream* is):peek(' '),reader(is),isStringConstant(false) {
+Lexer::Lexer(istream* is):peek(' '),reader(is),isStringConstant(false) {
 	initReserve();//¼ÓÔØ±£Áô×Ö
 }
 
@@ -15,7 +15,10 @@ void Lexer::reserve(Word* w) {
 
 //¶ÁÈ¡Ò»¸ö×Ö·û
 void Lexer::readch() {
-	reader->get(peek);
+	if (!reader->get(peek)) {
+		//std::cout << "EOF" << endl;
+		peek = ' ';
+	};
 }
 
 bool Lexer::readch(char c) {
@@ -93,7 +96,7 @@ void Lexer::initReserve() {
 	reserve(new Word("Array", ARRAY));
 	reserve(new Word("Date", DATE));
 	reserve(new Word("hasOwnProperty", HASOWNPROPERTY));
-	reserve(new Word("infinity", INFINITY));
+	reserve(new Word("infinity", Infinity));
 	reserve(new Word("isFinite", ISFINITE));
 	reserve(new Word("isNaN", ISNAN));
 	reserve(new Word("isPrototypeOf", ISPROTOTYPEOF));
@@ -118,18 +121,9 @@ void Lexer::ignoreSpace() {
 	}
 }
 
-void Lexer::ignoreComment() {
-	if (peek == '/') {
-		if (readch('*')) {
-			for (;!eof();) {
-				readch();
-				if (peek == '*'&&readch('/')) break;
-			}
-		}
-	}
-}
 
 Token* Lexer::scan() {
+
 	if (isStringConstant&&peek!='\''&&peek!='\"') {
 		string stringconstant = readStringConstant();
 		return new Word(stringconstant, STRING);
@@ -139,7 +133,18 @@ Token* Lexer::scan() {
 		//ºöÂÔ¿Õ¸ñ
 		ignoreSpace();
 		//ºöÂÔ×¢ÊÍ
-		ignoreComment();
+		if (peek == '/') {
+			if (readch('*')) {
+				for (; !eof();) {
+					readch();
+					if (peek == '*'&&readch('/')) break;
+				}
+			}
+			else {
+				return new Token('/');
+			}
+		}
+
 		if (eof()) return nullptr;
 
 	} while (peek == ' '||peek == '\t'||peek == '\n' );
@@ -164,6 +169,12 @@ Token* Lexer::scan() {
 	case '>':
 		if (readch('=')) return Word::Ge;
 		else return new Token('>');
+	case '+':
+		if (readch('+')) return Word::Add;
+		else return new Token('+');
+	case '-':
+		if (readch('-')) return Word::Minus;
+		else return new Token('-');
 	case '\'':
 		isStringConstant = !isStringConstant;
 		readch();

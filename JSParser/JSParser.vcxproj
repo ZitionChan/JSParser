@@ -76,6 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,33 +116,55 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BinaryExpr.cpp" />
     <ClCompile Include="Lexer.cpp" />
+    <ClCompile Include="LogicExpr.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="Value.cpp" />
     <ClCompile Include="Word.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllNodes.h" />
-    <ClInclude Include="ASTNode.h" />
+    <ClInclude Include="ArrayExpr.h" />
+    <ClInclude Include="AssignmentExpr.h" />
     <ClInclude Include="BinaryExpr.h" />
     <ClInclude Include="BlockStmt.h" />
+    <ClInclude Include="BoolLiteral.h" />
+    <ClInclude Include="CallExpr.h" />
     <ClInclude Include="Decl.h" />
+    <ClInclude Include="DoWhileStmt.h" />
     <ClInclude Include="Expr.h" />
+    <ClInclude Include="ForStmt.h" />
+    <ClInclude Include="FunctionDecl.h" />
+    <ClInclude Include="FunctionExpr.h" />
     <ClInclude Include="Identifier.h" />
+    <ClInclude Include="IfStmt.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="LexicalEnvironment.h" />
     <ClInclude Include="Literal.h" />
+    <ClInclude Include="LogicExpr.h" />
+    <ClInclude Include="NewExpr.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="NodeType.h" />
     <ClInclude Include="Number.h" />
+    <ClInclude Include="NumberLiteral.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Program.h" />
+    <ClInclude Include="ReturnStmt.h" />
+    <ClInclude Include="SequenceExpr.h" />
     <ClInclude Include="Stmt.h" />
     <ClInclude Include="StringConstant.h" />
     <ClInclude Include="Tag.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="UnaryExpr.h" />
+    <ClInclude Include="UpdateExpr.h" />
     <ClInclude Include="utils.h" />
-    <ClInclude Include="VariableDecl.h" />
+    <ClInclude Include="Value.h" />
+    <ClInclude Include="VariableDeclaration.h" />
+    <ClInclude Include="VariableDeclarator.h" />
+    <ClInclude Include="WhileStmt.h" />
     <ClInclude Include="Word.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

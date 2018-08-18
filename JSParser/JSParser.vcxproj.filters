@@ -28,6 +28,9 @@
     <Filter Include="头文件\Node">
       <UniqueIdentifier>{4980739c-420d-4e4a-8e6d-0c01eda3ead7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\Node">
+      <UniqueIdentifier>{c3e5afc4-d018-4bc2-9db1-2d55b2803c12}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -41,6 +44,18 @@
     </ClCompile>
     <ClCompile Include="Parser.cpp">
       <Filter>源文件\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Value.cpp">
+      <Filter>源文件\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="BinaryExpr.cpp">
+      <Filter>源文件\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="LogicExpr.cpp">
+      <Filter>源文件\Node</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,13 +110,7 @@
     <ClInclude Include="Identifier.h">
       <Filter>头文件\Node</Filter>
     </ClInclude>
-    <ClInclude Include="ASTNode.h">
-      <Filter>头文件\Parser</Filter>
-    </ClInclude>
     <ClInclude Include="Program.h">
-      <Filter>头文件\Node</Filter>
-    </ClInclude>
-    <ClInclude Include="VariableDecl.h">
       <Filter>头文件\Node</Filter>
     </ClInclude>
     <ClInclude Include="StringConstant.h">
@@ -109,6 +118,66 @@
     </ClInclude>
     <ClInclude Include="AllNodes.h">
       <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionDecl.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="IfStmt.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="NumberLiteral.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="BoolLiteral.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="AssignmentExpr.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="LogicExpr.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="WhileStmt.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="DoWhileStmt.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="ForStmt.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateExpr.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="SequenceExpr.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="ReturnStmt.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionExpr.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="VariableDeclarator.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="VariableDeclaration.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrayExpr.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="NewExpr.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="CallExpr.h">
+      <Filter>头文件\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeType.h">
+      <Filter>头文件\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Value.h">
+      <Filter>头文件\Parser</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,18 +2,21 @@
 
 #include"Expr.h"
 
+template<class T>
 class Literal :public Expr {
 protected:
-	double value;
+	T raw;
 public:
-	Literal(double v):value(v){}
-
-	double getValue() {
-		return value;
+	Literal(T v,NodeType t=Literal_t):Expr(v),Node(t),raw(v){
 	}
 
-	void display() {
-		cout << "Literal:" << endl;
-		cout << "value:" << value << endl;
+	T getRaw() {
+		return raw;
+	}
+
+	void display(int layer=1) {
+		cout <<setw(layer*2)<<" "<< "[Literal]:" << endl;
+		cout << setw(layer * 2+2) << " "<< "raw:" << raw << endl;
+		cout << setw(layer * 2 + 2) <<" "<<"value:"<< value << endl;
 	}
 };

@@ -8,5 +8,5 @@ class Decl :public Stmt {
 protected:
 	Identifier* id;
 public:
-	Decl(Identifier* i):id(i){}
+	Decl(Identifier* i,NodeType t=Decl_t):Node(t),id(i){}
 };

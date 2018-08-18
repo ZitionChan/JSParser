@@ -8,5 +8,5 @@ class LexicalEnvironment {
 
 public:
 	LexicalEnvironment();
-	put()
+
 };

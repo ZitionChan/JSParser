@@ -14,6 +14,6 @@ public:
 		return lexeme;
 	}
 
-	static Word *And,*Or , *Eq, *Ne, *Le, *Ge;
+	static Word *And,*Or , *Eq, *Ne, *Le, *Ge,*Add,*Minus;
 };
 

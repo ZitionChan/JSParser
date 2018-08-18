@@ -3,6 +3,7 @@
 
 #include<string>
 #include<sstream>
+#include"NodeType.h"
 
 using namespace std;
 
@@ -32,3 +33,5 @@ inline int Digit(char c) { //将字符转成数字
 	return (int)(c - '0');
 }
 
+void printType(NodeType t,int layer=1); 
+string typeToStr(NodeType t);

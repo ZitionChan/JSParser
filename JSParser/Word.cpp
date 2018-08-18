@@ -7,3 +7,6 @@ Word* Word::Eq = new Word("==", EQ);
 Word* Word::Ne = new Word("!=", NE);
 Word* Word::Le = new Word("<=", LE);
 Word* Word::Ge = new Word(">=", GE);
+Word* Word::Add = new Word("++", ADD);
+Word* Word::Minus = new Word("--", MINUS);
+
