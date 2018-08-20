@@ -13,12 +13,12 @@ using namespace std;
 
 
 enum mode {
-	READFILE,SHOWTREE
+	READFILE, SHOWTREE
 };
 
 
 void LexerTest(Lexer &lexer) {
-	while (!lexer.eof()){
+	while (!lexer.eof()) {
 		Token* token = lexer.scan();
 		if (token) {
 			switch (token->tag) {
@@ -39,7 +39,7 @@ void LexerTest(Lexer &lexer) {
 }
 
 void ParserTest(Lexer &lexer) {
-	Parser parser(&lexer);
+	Parser parser(lexer);
 	try {
 		parser.run();
 	}
@@ -57,7 +57,7 @@ void readFile(string path) {
 	if (ifile) {
 		Lexer lexer(&ifile);
 
-		Parser parser(&lexer);
+		Parser parser(lexer);
 
 		try {
 			parser.run();
@@ -76,28 +76,29 @@ void readFile(string path) {
 }
 
 //交互模式
-void interact(bool showTree=false) {
-	string line;
-	
+void interact(bool showTree = false) {
+	// fstream testfile("./test.txt");
+	// Lexer lexer(&testfile);
+
 	Lexer lexer(&cin);
-	Parser parser(&lexer);
-	while (line != "exit") {
+	Parser parser(lexer);
+	while (!lexer.eof()) {
 		cout << ">>>";
 		try {
 			parser.singleLine(showTree);
 		}
 		catch (string err) {
-			cout << err << endl;
+			cerr << err << endl;
 		}
 
-		
-		
-	}
 
+
+	}
+	cout << endl;
 }
 
 
-int main(int argc,char* argv[]) {
+int main(int argc, char* argv[]) {
 	//ifstream file("test.txt");
 	//Lexer lexer(&file);
 	//LexerTest(lexer);
@@ -107,7 +108,7 @@ int main(int argc,char* argv[]) {
 		interact();
 		//readFile("test.txt");
 	}
-	else{
+	else {
 
 		if (string(argv[1]) == "-f") {
 			if (argc == 2) {
@@ -118,24 +119,21 @@ int main(int argc,char* argv[]) {
 				readFile(path);
 			}
 		}
-		else if (string(argv[1])=="-t") {
+		else if (string(argv[1]) == "-t") {
 			interact(true);
 		}
-		else if (string(argv[1])=="-h") {
-			cout << "直接运行JSParser进入交互界面" << endl;
-			cout << "-h			打开帮助" << endl;
-			cout << "-t			显示语法树" << endl;
-			cout << "-f filepath	解析文本文件中的语句并显示语法树" << endl;
-		
+		else if (string(argv[1]) == "-h") {
+			cout << "直接运行JSParser进入交互界面\n"
+				<< "-h			打开帮助\n"
+				<< "-t			显示语法树\n"
+				<< "-f filepath	解析文本文件中的语句并显示语法树" << endl;
+
 		}
 		else {
 			cout << "command not found" << endl;
 		}
 	}
-	
 
-	system("pause");
 	return 0;
 
 }
-
