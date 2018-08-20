@@ -11,28 +11,28 @@ class Parser {
 	class LookaheadLexer {
 	private:
 		Lexer &lex;
-		Token *look = nullptr;
+		Token* look = nullptr;
 
 	public:
 		LookaheadLexer(Lexer &lex) : lex(lex) {}
-		Token *peek();
-		Token *move();
+		Token* peek();
+		Token* move();
 		void error(string s); //抛出异常
 	};
 
 	LookaheadLexer lex;
-	Token *peek() { return lex.peek(); }
-	Token *peek(std::initializer_list<int>, bool ignoreNewLine = true);
-	Token *peek(int t, bool ignoreNewLine = true) { return peek({ t }, ignoreNewLine); }
-	Token *match(int t);
-	Token *tryMatch(std::initializer_list<int> ts, bool ignoreNewLine = true);
-	Token *tryMatch(int t, bool ignoreNewLine = true) { return tryMatch({ t }, ignoreNewLine); }
-	Token *move() { return lex.move(); }
+	Token* peek() { return lex.peek(); }
+	Token* peek(std::initializer_list<int>, bool ignoreNewLine = true);
+	Token* peek(int t, bool ignoreNewLine = true) { return peek({ t }, ignoreNewLine); }
+	Token* match(int t);
+	Token* tryMatch(std::initializer_list<int> ts, bool ignoreNewLine = true);
+	Token* tryMatch(int t, bool ignoreNewLine = true) { return tryMatch({ t }, ignoreNewLine); }
+	Token* move() { return lex.move(); }
 
-	Program *top;
-	unordered_map<string, Identifier *> globalLE; //全局Lexical environment
+	Program* top;
+	unordered_map<string, Identifier*> globalLE; //全局Lexical environment
 
-	Node *program(); //解析一个语法单元
+	Node* program(); //解析一个语法单元
 
 	void error(string s) { lex.error(s); }
 
@@ -40,8 +40,8 @@ class Parser {
 	NumberLiteral* parseNumberLiteral(); //解析数字
 	Identifier* parseIdentifier();//解析变量名
 	VariableDeclaration* parseVariableDeclaration();
-	VariableDeclarator *parseVariableDeclarator(); //解析变量声明
-	FunctionDecl *parseFunctionDeclaration();      //解析函数声明
+	VariableDeclarator* parseVariableDeclarator(); //解析变量声明
+	FunctionDecl* parseFunctionDeclaration(); //解析函数声明
 
 
 	//解析Statement
