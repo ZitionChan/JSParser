@@ -2,61 +2,70 @@
 #include"Tag.h"
 #include"utils.h"
 
-Parser::Parser(Lexer* l) :lex(l),top(nullptr),globalLE() {
+Parser::Parser(Lexer& l) : lex(l), top(nullptr), globalLE() {}
 
+Token* Parser::LookaheadLexer::peek() {
+	if (look == nullptr) {
+		cerr << "getting token... ";
+		look = lex.scan();
+		cerr << look->toString() << endl;
+	}
+	return look;
 }
 
-void Parser::move() {
-	look = lex->scan();
-	if(look==nullptr){
-		look = new Token(LAST);
-	};
+Token* Parser::peek(std::initializer_list<int> ts, bool ignoreNewLine) {
+	if (ignoreNewLine) {
+		while (tryMatch('\n', false))
+			;
+	}
 
+	if (peek() == nullptr)
+		return nullptr;
+
+	for (int t : ts) {
+		if (t == peek()->tag)
+			return peek();
+	}
+	return nullptr;
 }
 
 void Parser::singleLine(bool showTree) {
+	Node* node = program();
 
-	move();
+	if (node)
+		cout << node->getValue() << endl;
 
-	Node * node = nullptr;
-	switch (look->tag) {
-	case VAR:
-		node = parseVariableDeclaration();
-		break;
-
-	case FUNCTION:
-		node = parseFunctionDeclaration();
-		break;
-
-	case '{':
-	case IF:
-	case DO:
-	case WHILE:
-	case FOR:
-		node = parseStmt();
-		break;
-
-	default:
-		node = parseSequenceExpr();
-		break;
-	}
-
-	
-	cout<<node->getValue()<<endl;
-
-	if (showTree) { 
+	if (showTree) {
 		cout << endl;
 		node->display();
 	}
 }
 
-void Parser::error(string s) {
-	throw "Error: Near line " + toStr(lex->line) + ": " + s;
+void Parser::LookaheadLexer::error(string s) {
+	throw "Error: Near line " + toStr(lex.line) + ": " + s;
 }
 
-void Parser::match(int t) {
-	if (t == look->tag) move();
-	else error("can't match:"+toStr((char)t));
+Token* Parser::match(int t) {
+	auto token = tryMatch(t);
+	if (token == nullptr)
+		error("can't match:" + toStr((char)t));
+
+	return token;
+}
+
+Token* Parser::tryMatch(std::initializer_list<int> ts, bool ignoreNewLine) {
+	auto token = peek(ts, ignoreNewLine);
+	if (token == nullptr) {
+		return nullptr;
+	}
+	move();
+	return token;
+}
+
+Token* Parser::LookaheadLexer::move() {
+	auto token = look;
+	look = nullptr;
+	return token;
 }
 
 void Parser::run() {
@@ -64,38 +73,25 @@ void Parser::run() {
 
 	top = new Program();
 
-	move();
-
-	while (!lex->eof()) {
+	while (peek()) {
 		Node* node = program();
 		if (node) top->append(node);
 	}
 }
 
 Node* Parser::program() {
-	Node * node=nullptr;
-	switch (look->tag) {
-	case VAR:
+	Node* node;
+	if (peek(VAR)) {
 		node = parseVariableDeclaration();
-		if(look->tag ==';') match(';');
-		break;
-
-	case FUNCTION:
+		tryMatch(';');
+	}
+	else if (peek(FUNCTION))
 		node = parseFunctionDeclaration();
-		break;
-
-	case '{':
-	case IF:
-	case DO:
-	case WHILE:
-	case FOR:
+	else if (peek({ '{', IF, DO, WHILE, FOR }))
 		node = parseStmt();
-		break;
-
-	default:
+	else {
 		node = parseSequenceExpr();
-		if(look->tag==';') match(';');
-		break;
+		tryMatch(';');
 	}
 
 	return node;
@@ -105,37 +101,25 @@ void Parser::display() {
 	top->display();
 }
 
-
-
 StringConstant* Parser::parseStringConstant() {
-	if (look->tag != STRING) {
-		error("Unexpected token " + look->toString());
-	}
+	auto token = match(STRING);
 
-	StringConstant* str = new StringConstant(look->toString());
-
-	move();
+	StringConstant* str = new StringConstant(token->toString());
 
 	return str;
 }
 
 NumberLiteral* Parser::parseNumberLiteral() {
-	if (look->tag != NUMBER) {
-		error("Unexpected token " + look->toString());
-	}
+	auto token = match(NUMBER);
 
-	NumberLiteral* ltrl = new NumberLiteral(look->getValue());
-	
-	move();
-	
+	NumberLiteral* ltrl = new NumberLiteral(token->getValue());
+
 	return ltrl;
 }
 
 Identifier* Parser::parseIdentifier() {
-	if (look->tag != ID) {
-		error("Unexpected token " + look->toString());
-	}
-	string name = look->toString();
+	auto token = match(ID);
+	string name = token->toString();
 
 	unordered_map<string, Identifier*>::iterator got = globalLE.find(name);
 
@@ -149,8 +133,6 @@ Identifier* Parser::parseIdentifier() {
 		id = (*got).second;
 	}
 
-	move();
-	
 	return id;
 }
 
@@ -160,47 +142,37 @@ VariableDeclaration* Parser::parseVariableDeclaration() {
 	VariableDeclaration* variableDeclaration = new VariableDeclaration();
 
 	VariableDeclarator* vd = nullptr;
-	 do{
+	do {
 		vd = parseVariableDeclarator();
-		if (look->tag == ',') {
-			match(',');
-		}
+		tryMatch(',');
 		variableDeclaration->append(vd);
-	}while (look->tag == ID);
-	
+	} while (peek(ID));
+
 	return variableDeclaration;
 }
 
 VariableDeclarator* Parser::parseVariableDeclarator() {
-	VariableDeclarator*  variableDeclaration=nullptr;//新结点
-	Identifier* id=nullptr;//声明的变量
+	VariableDeclarator* variableDeclaration = nullptr; //新结点
+	Identifier* id = nullptr;//声明的变量
 
-	if (look->tag == ID) {
+	auto token = match(ID);
 
-		id = parseIdentifier();
+	id = parseIdentifier();
 
+	if (tryMatch('=')) {
+		Expr* expr = nullptr;
 
-		if (look->tag == '=') {
-			match('=');
-			
-			Expr* expr = nullptr;
-
-			if (look->tag == FUNCTION) {
-				expr = parseFunctionExpr();
-			}
-			else {
-				expr = parseExpr();
-			}
-
-			variableDeclaration = new VariableDeclarator(id, expr);
+		if (peek(FUNCTION)) {
+			expr = parseFunctionExpr();
 		}
 		else {
-			variableDeclaration = new VariableDeclarator(id, nullptr);
+			expr = parseExpr();
 		}
 
+		variableDeclaration = new VariableDeclarator(id, expr);
 	}
 	else {
-		error("Unexpected token " + look->toString());
+		variableDeclaration = new VariableDeclarator(id, nullptr);
 	}
 
 	return variableDeclaration;
@@ -208,18 +180,16 @@ VariableDeclarator* Parser::parseVariableDeclarator() {
 
 FunctionDecl* Parser::parseFunctionDeclaration() {
 	FunctionDecl* functionDecl = nullptr;
-	
+
 	match(FUNCTION);
 	Identifier* id = parseIdentifier();
 	functionDecl = new FunctionDecl(id);
 
 	match('(');
-	while (look->tag != ')') {
+	while (peek(')')) {
 		Identifier* id = parseIdentifier();
 		functionDecl->appendParam(id);
-		if (look->tag == ',') {
-			match(',');
-		}
+		tryMatch(',');
 	}
 	match(')');
 
@@ -232,33 +202,21 @@ FunctionDecl* Parser::parseFunctionDeclaration() {
 Stmt* Parser::parseStmt() {
 	Stmt* stmt = nullptr;
 
-	switch (look->tag)
-	{
-	case '{':
+	if (peek('{'))
 		stmt = parseBlockStmt();
-		break;
-
-	case IF:
+	else if (peek(IF))
 		stmt = parseIfStatement();
-		break;
-
-	case WHILE:
+	else if (peek(WHILE))
 		stmt = parseWhileStmt();
-		break;
-
-	case DO:
+	else if (peek(DO)) {
 		stmt = parseDoWhileStmt();
 		match(';');
-		break;
-
-	case FOR:
-		stmt = parseForStmt();
-		break;
-
-	default:
-		error("Error in parseStmt");
-		break;
 	}
+	else if (peek(FOR))
+		stmt = parseForStmt();
+	else
+		error("Error in parseStmt");
+
 
 	return stmt;
 }
@@ -268,43 +226,30 @@ BlockStmt* Parser::parseBlockStmt(bool canReturn) {
 	BlockStmt* block = new BlockStmt();
 	match('{');
 
-	while (look->tag != '}') {
+	while (!peek('}')) {
 		Node* node = nullptr;
-		switch (look->tag)
-		{
-		case VAR: 
+		if (peek(VAR)) {
 			node = parseVariableDeclaration();
-			if(look->tag==';') match(';');
-			break;
-
-		case FUNCTION:
+			tryMatch(';');
+		}
+		else if (peek(FUNCTION))
 			node = parseFunctionDeclaration();
-			break;
-		
-		case IF:
-		case WHILE:
-		case DO:
-		case FOR:
-		case '{':
+		else if (peek({ IF, WHILE, DO, FOR, '{' }))
 			node = parseStmt();
-			break;
-
-		case RETURN:
-			if (canReturn) { 
-				node = parseReturnStmt(); 
+		else if (peek(RETURN)) {
+			if (canReturn) {
+				node = parseReturnStmt();
 			}
 			else {
 				error("Illegal return statement");
 			}
-			break;
-
-		default:
+		}
+		else {
 			node = parseSequenceExpr();
-			if (look->tag == ';') match(';');
-			break;
+			tryMatch(';');
 		}
 
-		if(node) block->append(node);
+		if (node) block->append(node);
 	};
 
 	match('}');
@@ -318,26 +263,24 @@ IfStmt* Parser::parseIfStatement() {
 	match('(');
 
 	Expr* test = parseLogicExpr();
-	if(!test)error("Unexpected Token:" + look->toString());
 	match(')');
 	Node* consequent = nullptr;
-	if (look->tag == '{') {
+	if (peek('{')) {
 		consequent = parseBlockStmt();
 	}
 	else {
 		consequent = parseExpr();
-		if(look->tag==';') match(';');
+		match(';');
 	}
 
-	if (look!=nullptr && look->tag == ELSE) {
-		move();
-		Node * alternate = nullptr;
-		if (look->tag == '{') {
+	if (peek(ELSE)) {
+		Node* alternate = nullptr;
+		if (peek('{')) {
 			alternate = parseBlockStmt();
 		}
 		else {
 			alternate = parseExpr();
-			if (look->tag == ';') match(';');
+			match(';');
 		}
 		ifstmt = new IfStmt(test, consequent, alternate);
 	}
@@ -345,26 +288,24 @@ IfStmt* Parser::parseIfStatement() {
 		ifstmt = new IfStmt(test, consequent, nullptr);
 	}
 
-
 	return ifstmt;
 }
 
 WhileStmt* Parser::parseWhileStmt() {
 	WhileStmt* whilestmt = nullptr;
-	
+
 	match(WHILE);
 	match('(');
 	Expr* test = parseLogicExpr();
-	if (!test) error("Unexpected Token:" + look->toString());
 
 	match(')');
 	Node* body = nullptr;
-	if (look->tag == '{') {
+	if (peek('{')) {
 		body = parseBlockStmt();
 	}
 	else {
 		body = parseExpr();
-		if(look->tag==';') match(';');
+		match(';');
 	}
 
 	whilestmt = new WhileStmt(test, body);
@@ -382,12 +323,10 @@ DoWhileStmt* Parser::parseDoWhileStmt() {
 	match(WHILE);
 	match('(');
 	Expr* test = parseLogicExpr();
-	if(!test)error("Unexpected Token:" + look->toString());
 
 	match(')');
 
 	dowhilestmt = new DoWhileStmt(test, body);
-
 	return dowhilestmt;
 }
 
@@ -398,7 +337,7 @@ ForStmt* Parser::parseForStmt() {
 
 	match('(');
 	Node* init = nullptr;
-	if (look->tag == VAR) {
+	if (peek(VAR)) {
 		init = parseVariableDeclaration();
 	}
 	else {
@@ -416,12 +355,12 @@ ForStmt* Parser::parseForStmt() {
 
 	Node* body = nullptr;
 
-	if (look->tag == '{') {
+	if (peek('{')) {
 		body = parseBlockStmt();
 	}
 	else {
 		body = parseExpr();
-		if(look->tag==';') match(';');
+		match(';');
 	}
 
 	forstmt = new ForStmt(body, init, test, update);
@@ -432,8 +371,8 @@ ForStmt* Parser::parseForStmt() {
 ReturnStmt* Parser::parseReturnStmt() {
 	match(RETURN);
 	Expr* expr = nullptr;
-	if (look->tag != ';') {
-		 expr = parseSequenceExpr();
+	if (!peek(';')) {
+		expr = parseSequenceExpr();
 	}
 
 	ReturnStmt* returnStmt = new ReturnStmt(expr);
@@ -443,50 +382,24 @@ ReturnStmt* Parser::parseReturnStmt() {
 
 Expr* Parser::parseExpr(bool shouldParseCall) {
 	Expr* expr = nullptr;
-	switch (look->tag)
-	{
-	case ID:
-	case '-':
-	case '+':
-	case '!':
-	case '(':
-	case NUMBER:
-	case TRUE:
-	case FALSE:
+	if (peek({ ID, '-', '+', '!', '(', NUMBER, TRUE, FALSE }))
 		expr = parseLogicExpr();
-		break;
-
-	case '[':
+	else if (peek('['))
 		expr = parseArrayExpr();
-		break;
-
-	case ADD:
-	case MINUS:
+	else if (peek({ ADD, MINUS }))
 		expr = parseUpdateExpr();
-		break;
-
-	case NEW:
+	else if (peek(NEW))
 		expr = parseNewExpr();
-		break;
-
-	case '\"':
-		match('\"');
+	else if (tryMatch('\"')) {
 		expr = parseStringConstant();
 		match('\"');
-		break;
-
-	case '\'':
-		match('\'');
+	}
+	else if (tryMatch('\'')) {
 		expr = parseStringConstant();
 		match('\'');
-		break;
-
-
-	default:
-		break;
 	}
 
-	if (shouldParseCall&&look->tag == '(') {
+	if (shouldParseCall && peek('(')) {
 		expr = parseCallExpr(expr);
 	}
 
@@ -498,16 +411,15 @@ Expr* Parser::parseSequenceExpr() {
 
 	expr = parseExpr();
 
-	if (!expr)error("Unexpected token " + look->toString());
-
-	if (look->tag != ',') {
+	cerr << "first expr." << endl;
+	if (!peek(',', false)) {
+		cerr << "only one expr." << endl;
 		return expr;
 	}
 
 	SequenceExpr* sequenceExpr = new SequenceExpr();
 	sequenceExpr->append(expr);
-	while (look->tag == ',') {
-		match(',');
+	while (tryMatch(',', false)) {
 		expr = parseExpr();
 		sequenceExpr->append(expr);
 	}
@@ -519,12 +431,11 @@ Expr* Parser::parseArrayExpr() {
 	ArrayExpr* arrayExpr = new ArrayExpr();
 	match('[');
 
-	while (look->tag != ']') {
+	while (!tryMatch(']')) {
 		Expr* element = parseExpr();
 		arrayExpr->append(element);
-		if (look->tag == ',') match(',');
+		tryMatch(',');
 	}
-	match(']');
 
 	return arrayExpr;
 }
@@ -537,14 +448,12 @@ Expr* Parser::parseNewExpr() {
 
 	NewExpr* newExpr = new NewExpr(callee);
 
-	if (look->tag == '(') {
-		match('(');
-		while (look->tag != ')') {
+	if (tryMatch('(')) {
+		while (!tryMatch(')')) {
 			Expr* argument = parseExpr();
 			newExpr->append(argument);
-			if (look->tag == ',') match(',');
+			tryMatch(',');
 		}
-		match(')');
 	}
 
 	return newExpr;
@@ -553,12 +462,11 @@ Expr* Parser::parseNewExpr() {
 Expr* Parser::parseCallExpr(Expr* callee) {
 	CallExpr* callExpr = new CallExpr(callee);
 	match('(');
-	while (look->tag != ')') {
+	while (!tryMatch(')')) {
 		Expr* argument = parseExpr();
 		callExpr->append(argument);
-		if (look->tag == ',') match(',');
+		tryMatch(',');
 	}
-	match(')');
 
 	return callExpr;
 }
@@ -568,20 +476,17 @@ Expr* Parser::parseFunctionExpr() {
 
 	match(FUNCTION);
 	Identifier* id = nullptr;
-	if (look->tag == ID) {
-	 id = parseIdentifier();
+	if (peek(ID)) {
+		id = parseIdentifier();
 	}
 	functionExpr = new FunctionExpr(id);
 
 	match('(');
-	while (look->tag != ')') {
+	while (!tryMatch(')')) {
 		Identifier* id = parseIdentifier();
 		functionExpr->appendParam(id);
-		if (look->tag == ',') {
-			match(',');
-		}
+		tryMatch(',');
 	}
-	match(')');
 
 	BlockStmt* body = parseBlockStmt(true);
 	functionExpr->appendBody(body);
@@ -590,21 +495,17 @@ Expr* Parser::parseFunctionExpr() {
 }
 
 Expr* Parser::parseUpdateExpr(Expr* arg) {
-	Expr* expr = nullptr;
-	Token* op = look;
+	Token* op = move();
 
 	Expr* argument = arg;
 
-	bool prefix = (argument ==nullptr) ? true : false;
+	bool prefix = argument == nullptr;
 
 	if (prefix) {
-		move();
 		argument = parseIdentifier();
 	}
 
-	expr = new UpdateExpr(op, argument, prefix);
-	
-	move();
+	auto expr = new UpdateExpr(op, argument, prefix);
 
 	return expr;
 }
@@ -614,13 +515,10 @@ Expr* Parser::parseAssignmentExpr() {
 
 	Identifier* id = parseIdentifier();
 
-	if (look->tag == '=') {
-		Token* eq = look;
-		move();
+	if (auto eq = tryMatch('=')) {
+		Expr* right = nullptr;
 
-		Expr* right =nullptr;
-
-		if (look->tag == FUNCTION) {
+		if (peek(FUNCTION)) {
 			right = parseFunctionExpr();
 		}
 		else {
@@ -629,7 +527,7 @@ Expr* Parser::parseAssignmentExpr() {
 
 		expr = new AssignmentExpr(eq, id, right);
 	}
-	else if(look->tag==ADD||look->tag==MINUS){
+	else if (peek({ ADD, MINUS })) {
 		expr = parseUpdateExpr(id);
 	}
 	else {
@@ -641,9 +539,7 @@ Expr* Parser::parseAssignmentExpr() {
 
 Expr* Parser::parseLogicExpr() {
 	Expr* left = join();
-	while (look->tag == OR) {
-		Token* op = look;
-		move();
+	while (auto op = tryMatch(OR)) {
 		left = new LogicExpr(op, left, join());
 	}
 
@@ -652,9 +548,7 @@ Expr* Parser::parseLogicExpr() {
 
 Expr* Parser::join() {
 	Expr* left = equality();
-	while (look->tag == AND) {
-		Token* op = look;
-		move();
+	while (auto op = tryMatch(AND)) {
 		left = new LogicExpr(op, left, equality());
 	}
 
@@ -663,9 +557,7 @@ Expr* Parser::join() {
 
 Expr* Parser::equality() {
 	Expr* left = rel();
-	while (look->tag == EQ || look->tag == NE) {
-		Token* op = look;
-		move();
+	while (auto op = tryMatch({ EQ, NE })) {
 		left = new BinaryExpr(op, left, rel());
 	}
 
@@ -674,34 +566,16 @@ Expr* Parser::equality() {
 
 Expr* Parser::rel() {
 	Expr* left = parseBinaryExpr();
-	Token* op = nullptr;
-	switch (look->tag)	
-	{
-	case '<':
-	case LE:
-	case GE:
-	case '>':
-		op = look;
-		move();
+	if (auto op = tryMatch({ '<', LE, GE, '>' })) {
 		left = new BinaryExpr(op, left, parseBinaryExpr());
-	default:
-		break;
 	}
 
 	return left;
 }
 
 Expr* Parser::parseBinaryExpr() {
-
-	Expr* left = nullptr;
-
-	left = getTerm();
-	
-	Token* op = nullptr;
-
-	while (look->tag == '+' || look->tag == '-') {
-		op = look;
-		move();
+	Expr* left = getTerm();
+	while (auto op = tryMatch({ '+', '-' })) {
 		left = new BinaryExpr(op, left, getTerm());
 	}
 
@@ -710,10 +584,7 @@ Expr* Parser::parseBinaryExpr() {
 
 Expr* Parser::getTerm() {
 	Expr* right = parseUnaryExpr();
-	Token* op = nullptr;
-	while (look->tag == '*' || look->tag == '/') {
-		op = look;
-		move();
+	while (auto op = tryMatch({ '*', '/' })) {
 		right = new BinaryExpr(op, right, parseUnaryExpr());
 	}
 
@@ -722,40 +593,25 @@ Expr* Parser::getTerm() {
 
 Expr* Parser::parseUnaryExpr() {
 	Expr* unaryExpr = nullptr;
-	if (look->tag == '-' || look->tag == '!' || look->tag == '+') {
-		Token* op = look;
-
-		move();
+	if (auto op = tryMatch({ '-', '!', '+' })) {
 		Expr* argument = parseUnaryExpr();
 		unaryExpr = new UnaryExpr(op, argument);
-
 	}
-	else if (look->tag == '(') {
-		match('(');
+	else if (tryMatch('(')) {
 		unaryExpr = parseLogicExpr();
 		match(')');
 	}
-	else {
-		switch (look->tag)
-		{
-		case NUMBER:
-			unaryExpr = parseNumberLiteral();
-			break;
-		case ID:
-			unaryExpr = parseAssignmentExpr();
-			break;
-		case TRUE:
-			unaryExpr = new BoolLiteral("true");
-			move();
-			break;
-		case FALSE:
-			unaryExpr = new BoolLiteral("false");
-			move();
-			break;
-
-		default:
-			break;
-		}
+	else if (peek(NUMBER)) {
+		unaryExpr = parseNumberLiteral();
+	}
+	else if (peek(ID)) {
+		unaryExpr = parseAssignmentExpr();
+	}
+	else if (tryMatch(TRUE)) {
+		unaryExpr = new BoolLiteral("true");
+	}
+	else if (tryMatch(FALSE)) {
+		unaryExpr = new BoolLiteral("false");
 	}
 
 	return unaryExpr;

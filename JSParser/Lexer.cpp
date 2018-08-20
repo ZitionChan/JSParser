@@ -2,23 +2,25 @@
 #include"Number.h"
 #include"Tag.h"
 
+#include <vector>
+
+using namespace std;
+
 int Lexer::line = 1;
 
-Lexer::Lexer(istream* is):peek(' '),reader(is),isStringConstant(false) {
+Lexer::Lexer(istream* is) :peek(' '), reader(is), isStringConstant(false) {
 	initReserve();//加载保留字
 }
 
 //加入保留字
 void Lexer::reserve(Word* w) {
-	words.insert(pair<string,Word*>(w->toString(), w));
+	words.insert({ w->toString(), w });
 }
 
 //读取一个字符
 void Lexer::readch() {
-	if (!reader->get(peek)) {
-		//std::cout << "EOF" << endl;
-		peek = ' ';
-	};
+	if (!reader->get(peek))
+		peek = EOF;
 }
 
 bool Lexer::readch(char c) {
@@ -30,93 +32,98 @@ bool Lexer::readch(char c) {
 
 //预载保留字
 void Lexer::initReserve() {
-	reserve(new Word("abstract", ABSTRACT));
-	reserve(new Word("argument", ARGUMENTS));
-	reserve(new Word("boolean", BOOLEAN));
-	reserve(new Word("break", BREAK));
-	reserve(new Word("byte", BYTE));
-	reserve(new Word("case", CASE));
-	reserve(new Word("catch", CATCH));
-	reserve(new Word("char", CHAR));
-	reserve(new Word("class", CLASS));
-	reserve(new Word("const", CONST));
-	reserve(new Word("continue", CONTINUE));
-	reserve(new Word("debugger", DEBUGGER));
-	reserve(new Word("default", DEFAULT));
-	reserve(new Word("delete", DELETE));
-	reserve(new Word("do", DO));
-	reserve(new Word("double", DOUBLE));
-	reserve(new Word("else", ELSE));
-	reserve(new Word("enum", ENUM));
-	reserve(new Word("eval", EVAL));
-	reserve(new Word("export", EXPORT));
-	reserve(new Word("extends", EXTENDS));
-	reserve(new Word("false", FALSE));
-	reserve(new Word("final", FINAL));
-	reserve(new Word("finally", FINALLY));
-	reserve(new Word("float", FLOAT));
-	reserve(new Word("for", FOR));
-	reserve(new Word("function", FUNCTION));
-	reserve(new Word("goto", GOTO));
-	reserve(new Word("if", IF));
-	reserve(new Word("implements", IMPLEMENTS));
-	reserve(new Word("import", IMPORT));
-	reserve(new Word("in", IN));
-	reserve(new Word("instanceof", INSTANCEOF));
-	reserve(new Word("int", INT));
-	reserve(new Word("interface", INTERFACE));
-	reserve(new Word("let", LET));
-	reserve(new Word("long", LONG));
-	reserve(new Word("native", NATIVE));
-	reserve(new Word("new", NEW));
-	reserve(new Word("null", Null));
-	reserve(new Word("package", PACKAGE));
-	reserve(new Word("private", PRIVATE));
-	reserve(new Word("protected", PROTECTED));
-	reserve(new Word("public", PUBLIC));
-	reserve(new Word("return", RETURN));
-	reserve(new Word("short", SHORT));
-	reserve(new Word("static", STATIC));
-	reserve(new Word("super", SUPER));
-	reserve(new Word("switch", SWITCH));
-	reserve(new Word("synchronized", SYNCHRONIZED));
-	reserve(new Word("this", THIS));
-	reserve(new Word("throw", THROW));
-	reserve(new Word("throws", THROWS));
-	reserve(new Word("transient", TRANSIENT));
-	reserve(new Word("true", TRUE));
-	reserve(new Word("try", TRY));
-	reserve(new Word("typeof", TYPEOF));
-	reserve(new Word("var", VAR));
-	reserve(new Word("void", VOID));
-	reserve(new Word("volatile", VOLATILE));
-	reserve(new Word("while", WHILE));
-	reserve(new Word("with", WITH));
-	reserve(new Word("yield", YIELD));
-	reserve(new Word("Array", ARRAY));
-	reserve(new Word("Date", DATE));
-	reserve(new Word("hasOwnProperty", HASOWNPROPERTY));
-	reserve(new Word("infinity", Infinity));
-	reserve(new Word("isFinite", ISFINITE));
-	reserve(new Word("isNaN", ISNAN));
-	reserve(new Word("isPrototypeOf", ISPROTOTYPEOF));
-	reserve(new Word("length", LENGTH));
-	reserve(new Word("Math", MATH));
-	reserve(new Word("NaN", Nan));
-	reserve(new Word("name", NAME));
-	reserve(new Word("Number", NUMBER));
-	reserve(new Word("Object", OBJECT));
-	reserve(new Word("prototype", PROTOTYPE));
-	reserve(new Word("String", STRING));
-	reserve(new Word("toString", TOSTRING));
-	reserve(new Word("undefined", UNDEFINED));
-	reserve(new Word("valueOf", VALUEOF));
+	vector<pair<string, Tag>> reserves = {
+		{"abstract", ABSTRACT},
+		{"argument", ARGUMENTS},
+		{"boolean", BOOLEAN},
+		{"break", BREAK},
+		{"byte", BYTE},
+		{"case", CASE},
+		{"catch", CATCH},
+		{"char", CHAR},
+		{"class", CLASS},
+		{"const", CONST},
+		{"continue", CONTINUE},
+		{"debugger", DEBUGGER},
+		{"default", DEFAULT},
+		{"delete", DELETE},
+		{"do", DO},
+		{"double", DOUBLE},
+		{"else", ELSE},
+		{"enum", ENUM},
+		{"eval", EVAL},
+		{"export", EXPORT},
+		{"extends", EXTENDS},
+		{"false", FALSE},
+		{"final", FINAL},
+		{"finally", FINALLY},
+		{"float", FLOAT},
+		{"for", FOR},
+		{"function", FUNCTION},
+		{"goto", GOTO},
+		{"if", IF},
+		{"implements", IMPLEMENTS},
+		{"import", IMPORT},
+		{"in", IN},
+		{"instanceof", INSTANCEOF},
+		{"int", INT},
+		{"interface", INTERFACE},
+		{"let", LET},
+		{"long", LONG},
+		{"native", NATIVE},
+		{"new", NEW},
+		{"null", Null},
+		{"package", PACKAGE},
+		{"private", PRIVATE},
+		{"protected", PROTECTED},
+		{"public", PUBLIC},
+		{"return", RETURN},
+		{"short", SHORT},
+		{"static", STATIC},
+		{"super", SUPER},
+		{"switch", SWITCH},
+		{"synchronized", SYNCHRONIZED},
+		{"this", THIS},
+		{"throw", THROW},
+		{"throws", THROWS},
+		{"transient", TRANSIENT},
+		{"true", TRUE},
+		{"try", TRY},
+		{"typeof", TYPEOF},
+		{"var", VAR},
+		{"void", VOID},
+		{"volatile", VOLATILE},
+		{"while", WHILE},
+		{"with", WITH},
+		{"yield", YIELD},
+		{"Array", ARRAY},
+		{"Date", DATE},
+		{"hasOwnProperty", HASOWNPROPERTY},
+		{"infinity", Infinity},
+		{"isFinite", ISFINITE},
+		{"isNaN", ISNAN},
+		{"isPrototypeOf", ISPROTOTYPEOF},
+		{"length", LENGTH},
+		{"Math", MATH},
+		{"NaN", Nan},
+		{"name", NAME},
+		{"Number", NUMBER},
+		{"Object", OBJECT},
+		{"prototype", PROTOTYPE},
+		{"String", STRING},
+		{"toString", TOSTRING},
+		{"undefined", UNDEFINED},
+		{"valueOf", VALUEOF},
+	};
+
+	for (auto& r : reserves) {
+		reserve(new Word(r.first, r.second));
+	}
 }
 
 void Lexer::ignoreSpace() {
-	for (;!eof(); readch()) {
+	for (; !eof(); readch()) {
 		if (peek == ' ' || peek == '\t') continue;
-		else if (peek == '\n') line = line + 1;
 		else break;
 	}
 }
@@ -124,7 +131,7 @@ void Lexer::ignoreSpace() {
 
 Token* Lexer::scan() {
 
-	if (isStringConstant&&peek!='\''&&peek!='\"') {
+	if (isStringConstant && peek != '\'' && peek != '\"') {
 		string stringconstant = readStringConstant();
 		return new Word(stringconstant, STRING);
 	}
@@ -147,10 +154,17 @@ Token* Lexer::scan() {
 
 		if (eof()) return nullptr;
 
-	} while (peek == ' '||peek == '\t'||peek == '\n' );
+	} while (peek == ' ' || peek == '\t');
 
 	switch (peek)
 	{
+	case '\r':
+		readch('\n');
+		[[fallthrough]];
+	case '\n':
+		peek = ' ';
+		line++;
+		return new Token('\n');
 	case '&':
 		if (readch('&')) return Word::And;
 		else return new Token('&');
@@ -225,14 +239,13 @@ Token* Lexer::scan() {
 	}
 
 	Token* tok = new Token(peek);
-	peek = ' '
-		;
+	peek = ' ';
 	return tok;
 }
 
 string Lexer::readStringConstant() {
 	stringstream ss;
-	while (peek != '\"' && peek!='\'') {
+	while (peek != '\"' && peek != '\'') {
 		ss << peek;
 		readch();
 	}

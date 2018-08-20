@@ -22,6 +22,5 @@ enum Tag {
 	//标签
 	AND,OR,EQ,NE,LE,GE,ID,
 	ADD,//连加
-	MINUS, //连减
-	LAST//最后的标识
+	MINUS //连减
 };
