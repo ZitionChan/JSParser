@@ -6,9 +6,9 @@ Parser::Parser(Lexer& l) : lex(l), top(nullptr), globalLE() {}
 
 Token* Parser::LookaheadLexer::peek() {
 	if (look == nullptr) {
-		cerr << "getting token... ";
+
 		look = lex.scan();
-		cerr << look->toString() << endl;
+
 	}
 	return look;
 }
@@ -30,6 +30,7 @@ Token* Parser::peek(std::initializer_list<int> ts, bool ignoreNewLine) {
 }
 
 void Parser::singleLine(bool showTree) {
+	move();
 	Node* node = program();
 
 	if (node)
@@ -123,7 +124,6 @@ Identifier* Parser::parseIdentifier() {
 
 	unordered_map<string, Identifier*>::iterator got = globalLE.find(name);
 
-
 	Identifier* id = nullptr;
 	if (got == globalLE.end()) {
 		id = new Identifier(name);
@@ -155,20 +155,13 @@ VariableDeclarator* Parser::parseVariableDeclarator() {
 	VariableDeclarator* variableDeclaration = nullptr; //新结点
 	Identifier* id = nullptr;//声明的变量
 
-	auto token = match(ID);
+	//auto token = match(ID);
 
 	id = parseIdentifier();
 
 	if (tryMatch('=')) {
-		Expr* expr = nullptr;
-
-		if (peek(FUNCTION)) {
-			expr = parseFunctionExpr();
-		}
-		else {
-			expr = parseExpr();
-		}
-
+		Expr* expr = parseExpr();
+	
 		variableDeclaration = new VariableDeclarator(id, expr);
 	}
 	else {
@@ -186,12 +179,12 @@ FunctionDecl* Parser::parseFunctionDeclaration() {
 	functionDecl = new FunctionDecl(id);
 
 	match('(');
-	while (peek(')')) {
+	while (!tryMatch(')')) {
 		Identifier* id = parseIdentifier();
 		functionDecl->appendParam(id);
 		tryMatch(',');
 	}
-	match(')');
+	//match(')');.
 
 	BlockStmt* body = parseBlockStmt(true);
 	functionDecl->appendBody(body);
@@ -273,7 +266,7 @@ IfStmt* Parser::parseIfStatement() {
 		match(';');
 	}
 
-	if (peek(ELSE)) {
+	if (tryMatch(ELSE)) {
 		Node* alternate = nullptr;
 		if (peek('{')) {
 			alternate = parseBlockStmt();
@@ -384,6 +377,8 @@ Expr* Parser::parseExpr(bool shouldParseCall) {
 	Expr* expr = nullptr;
 	if (peek({ ID, '-', '+', '!', '(', NUMBER, TRUE, FALSE }))
 		expr = parseLogicExpr();
+	else if (peek(FUNCTION))
+		expr = parseFunctionExpr();
 	else if (peek('['))
 		expr = parseArrayExpr();
 	else if (peek({ ADD, MINUS }))
@@ -411,9 +406,9 @@ Expr* Parser::parseSequenceExpr() {
 
 	expr = parseExpr();
 
-	cerr << "first expr." << endl;
+
 	if (!peek(',', false)) {
-		cerr << "only one expr." << endl;
+
 		return expr;
 	}
 

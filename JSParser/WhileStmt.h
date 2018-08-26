@@ -11,7 +11,7 @@ class WhileStmt :public Stmt {
 	Node* body;
 public:
 	WhileStmt(Expr* t,Node* b,NodeType type=WhileStmt_t):Node(type),test(t),body(b) {
-			
+		setValue("While Statement");
 	}
 
 	void display(int layer = 1) {

@@ -6,7 +6,9 @@ using namespace std;
 class ArrayExpr :public Expr {
 	vector<Expr*> elements;
 public:
-	ArrayExpr(NodeType t=ArrayExpr_t):Node(t){}
+	ArrayExpr(NodeType t=ArrayExpr_t):Node(t){
+		setValue("Array Expression");
+	}
 
 	void append(Expr* e) {
 		elements.push_back(e);

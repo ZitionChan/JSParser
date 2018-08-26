@@ -48,6 +48,10 @@ public:
 	bool operator!=(const Value& v)const;
 
 	const Value& operator!();
+	const Value& operator++();
+	const Value& operator--();
+	const Value operator++(int);
+	const Value operator--(int);
 
 	friend ostream& operator<<( ostream& os,const Value& v);
 

@@ -280,6 +280,40 @@ const Value& Value::operator!() {
 	return *this;
 }
 
+const Value& Value::operator++() {
+	if (type == number_t) {
+		numberVal++;
+	}
+
+	return *this;
+}
+
+const Value& Value::operator--() {
+	if (type == number_t) {
+		numberVal--;
+	}
+
+	return *this;
+}
+
+const Value Value::operator++(int) {
+	if (type == number_t) {
+		Value tmp(numberVal);
+		numberVal++;
+		return tmp;
+	}
+	return *this;
+}
+
+const Value Value::operator--(int) {
+	if (type == number_t) {
+		Value tmp(numberVal);
+		numberVal--;
+		return tmp;
+	}
+	return *this;
+}
+
 ostream& operator<<(ostream& os,const Value& v) {
 	switch (v.type)	
 	{

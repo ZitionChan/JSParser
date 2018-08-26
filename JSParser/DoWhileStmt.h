@@ -12,7 +12,7 @@ class DoWhileStmt :public Stmt {
 	Node* body;
 public:
 	DoWhileStmt(Expr* t, Node* b,NodeType type=DoWhileStmt_t) :Node(type),test(t), body(b) {
-
+		setValue("Do While Statement");
 	}
 
 	void display(int layer = 1) {

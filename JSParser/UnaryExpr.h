@@ -17,6 +17,14 @@ public:
 		case '!':
 			tempValue = !tempValue;
 			break;
+		case ADD:
+			++tempValue; 
+			arg->setValue(tempValue); 
+			break;
+		case MINUS:
+			--tempValue;
+			arg->setValue(tempValue);
+			break;
 		default:
 			break;
 		}

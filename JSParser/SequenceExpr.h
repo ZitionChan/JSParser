@@ -7,7 +7,9 @@ using namespace std;
 class SequenceExpr :public Expr {
 	vector<Expr*> expressions;
 public:
-	SequenceExpr(NodeType t=SequenceExpr_t):Node(t){}
+	SequenceExpr(NodeType t=SequenceExpr_t):Node(t){
+		setValue("Sequence Expression");
+	}
 
 	void append(Expr* e) {
 		expressions.push_back(e);

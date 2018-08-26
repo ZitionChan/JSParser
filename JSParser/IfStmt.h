@@ -14,7 +14,7 @@ protected:
 	Node* alternate;
 public:
 	IfStmt(Expr* t, Node* c, Node* a=nullptr,NodeType type=IfStmt_t) :Node(type),test(t), consequent(c), alternate(a) {
-
+		setValue("If Statement");
 	}
 
 	void display(int layer = 1) {

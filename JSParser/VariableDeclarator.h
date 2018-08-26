@@ -9,9 +9,11 @@ protected:
 public:
 
 	VariableDeclarator(Identifier* id,Expr* in,NodeType t=VariableDeclarator_t) :Node(t),Decl(id),init(in) {
-		type = in->type;
-		id->setValue(in->getValue());
-		setValue(id->getValue());
+		if (in) {
+			type = in->type;
+			id->setValue(in->getValue());
+			setValue(id->getValue());
+		}
 	}
 
 	void display(int layer=1) {

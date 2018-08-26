@@ -11,7 +11,9 @@ class FunctionExpr :public Expr {
 	vector<Identifier*> params;
 	BlockStmt* body;
 public:
-	FunctionExpr(Identifier* i,NodeType t = FunctionExpr_t):Node(t),id(i){}
+	FunctionExpr(Identifier* i,NodeType t = FunctionExpr_t):Node(t),id(i){
+		setValue("Function Expression");
+	}
 
 	void appendParam(Identifier* a) {
 		params.push_back(a);

@@ -7,7 +7,9 @@ class CallExpr :public Expr {
 	Expr* callee;
 	vector<Expr*> arguments;
 public:
-	CallExpr(Expr* c,NodeType t=CallExpr_t):Node(t),callee(c){}
+	CallExpr(Expr* c,NodeType t=CallExpr_t):Node(t),callee(c){
+		setValue("Call Expression");
+	}
 	
 	void append(Expr* e) {
 		arguments.push_back(e);

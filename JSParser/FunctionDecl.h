@@ -9,7 +9,9 @@ protected:
 	vector<Identifier*> params;
 	BlockStmt* body;
 public:
-	FunctionDecl(Identifier* id,NodeType t=FunctionDecl_t):Node(t),Decl(id){}
+	FunctionDecl(Identifier* id,NodeType t=FunctionDecl_t):Node(t),Decl(id){
+		setValue("Function Declaration");
+	}
 	
 	void appendParam(Identifier* a) {
 		params.push_back(a);

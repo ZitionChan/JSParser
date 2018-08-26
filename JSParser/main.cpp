@@ -51,7 +51,7 @@ void ParserTest(Lexer &lexer) {
 
 
 void readFile(string path) {
-	//cin >> path;
+
 	ifstream ifile(path);
 
 	if (ifile) {
@@ -99,14 +99,11 @@ void interact(bool showTree = false) {
 
 
 int main(int argc, char* argv[]) {
-	//ifstream file("test.txt");
-	//Lexer lexer(&file);
-	//LexerTest(lexer);
+
 	cout << "Welcome To JSParser!" << endl;
 
 	if (argc == 1) {
 		interact();
-		//readFile("test.txt");
 	}
 	else {
 

@@ -12,7 +12,9 @@ class ForStmt :public Stmt {
 	Node* init;
 	Node* body;
 public:
-	ForStmt(Node* b,Node* i,Expr* t, Expr* u,NodeType type=ForStmt_t):Node(type),test(t),update(u),init(i),body(b){}
+	ForStmt(Node* b,Node* i,Expr* t, Expr* u,NodeType type=ForStmt_t):Node(type),test(t),update(u),init(i),body(b){
+		setValue("For Statement");
+	}
 
 	void display(int layer = 1) {
 		cout << setw(layer * 2) << " " << "[For Statement]:" << endl;

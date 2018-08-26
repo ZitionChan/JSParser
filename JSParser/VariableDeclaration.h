@@ -8,7 +8,7 @@ class VariableDeclaration :public Stmt {
 	vector<VariableDeclarator*> declarations;
 public:
 	VariableDeclaration(NodeType t=VariableDeclaration_t):Node(t){
-		setValue("VariableDeclaration");
+		setValue("Variable Declaration");
 	}
 
 	void append(VariableDeclarator* vd) {

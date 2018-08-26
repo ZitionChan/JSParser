@@ -9,7 +9,9 @@ class BlockStmt :public Stmt {
 protected:
 	vector<Node*> body;
 public:
-	BlockStmt(NodeType t=BlockStmt_t):Node(t) {}
+	BlockStmt(NodeType t=BlockStmt_t):Node(t) {
+		setValue("Block Statement");
+	}
 	void append(Node* n) {
 		body.push_back(n);
 	}
