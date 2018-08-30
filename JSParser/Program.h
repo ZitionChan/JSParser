@@ -15,7 +15,6 @@ public:
 		body.push_back(n);
 	}
 
-
 	void display(int layer=0) {
 		cout << setw(layer * 2 ) << " " << "[Program]:" << endl;
 		cout << setw(layer * 2 + 2) << " " << "body[" << body.size() << "]:" << endl;

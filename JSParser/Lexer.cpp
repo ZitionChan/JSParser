@@ -1,7 +1,7 @@
 #include"Lexer.h"
 #include"Number.h"
 #include"Tag.h"
-
+#include<iostream>
 #include <vector>
 
 using namespace std;
@@ -255,4 +255,31 @@ string Lexer::readStringConstant() {
 
 bool Lexer::eof() {
 	return reader->eof();
+}
+
+void Lexer::run() {
+	while (!eof()) {
+		Token* token = scan();
+		if (token) {
+			switch (token->tag) {
+			case NUMBER:
+				cout << "( NUMBER ," << token->toString() << " )" << endl; break;
+			case ID:
+				cout << "( ID ," << token->toString() << " )" << endl; break;
+			case STRING:
+				cout << "(STRING, \'" << token->toString() << "\' )" << endl; break;
+			default:
+				if (token->tag >= 256 && token->tag <= 336) {
+					cout << "( KEYWORD ," << token->toString() << " )" << endl;
+				}
+				else if (token->tag == '\n') {
+					return;
+				}
+				else {
+					cout << "( TOKEN ," << token->toString() << " )" << endl;
+				}
+				break;
+			}
+		}
+	}
 }

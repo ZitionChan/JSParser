@@ -27,5 +27,5 @@ public:
 	char getPeek() {
 		return peek;
 	}
-
+	void run();
 };

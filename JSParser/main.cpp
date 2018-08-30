@@ -8,36 +8,9 @@
 #include"Parser.h"
 #include"Value.h"
 
-
 using namespace std;
 
-
-enum mode {
-	READFILE, SHOWTREE
-};
-
-
-void LexerTest(Lexer &lexer) {
-	while (!lexer.eof()) {
-		Token* token = lexer.scan();
-		if (token) {
-			switch (token->tag) {
-			case NUMBER:
-				cout << "( NUMBER ," << token->toString() << " )" << endl; break;
-			case ID:
-				cout << "( ID ," << token->toString() << " )" << endl; break;
-			case IF:
-			case VAR:
-				cout << "( KEYWORD ," << token->toString() << " )" << endl; break;
-			case STRING:
-				cout << "(STRING, \'" << token->toString() << "\' )" << endl; break;
-			default:
-				cout << "( TOKEN ," << token->toString() << " )" << endl; break;
-			}
-		}
-	}
-}
-
+//Parser测试
 void ParserTest(Lexer &lexer) {
 	Parser parser(lexer);
 	try {
@@ -49,7 +22,7 @@ void ParserTest(Lexer &lexer) {
 	parser.display();
 }
 
-
+//从文件读取
 void readFile(string path) {
 
 	ifstream ifile(path);
@@ -77,8 +50,6 @@ void readFile(string path) {
 
 //交互模式
 void interact(bool showTree = false) {
-	// fstream testfile("./test.txt");
-	// Lexer lexer(&testfile);
 
 	Lexer lexer(&cin);
 	Parser parser(lexer);
@@ -90,13 +61,19 @@ void interact(bool showTree = false) {
 		catch (string err) {
 			cerr << err << endl;
 		}
-
-
-
 	}
 	cout << endl;
 }
 
+void tokenOnly() {
+	Lexer lexer(&cin);
+
+	while (!lexer.eof()) {
+		cout << ">>>";
+		lexer.run();
+	}
+
+}
 
 int main(int argc, char* argv[]) {
 
@@ -107,7 +84,7 @@ int main(int argc, char* argv[]) {
 	}
 	else {
 
-		if (string(argv[1]) == "-f") {
+		if (string(argv[1]) == "file") {
 			if (argc == 2) {
 				cout << "Need a file path" << endl;
 			}
@@ -116,14 +93,27 @@ int main(int argc, char* argv[]) {
 				readFile(path);
 			}
 		}
-		else if (string(argv[1]) == "-t") {
+		else if (string(argv[1]) == "cli") {
+			interact();
+		}
+		else if (string(argv[1]) == "tree") {
 			interact(true);
 		}
-		else if (string(argv[1]) == "-h") {
-			cout << "直接运行JSParser进入交互界面\n"
-				<< "-h			打开帮助\n"
-				<< "-t			显示语法树\n"
-				<< "-f filepath	解析文本文件中的语句并显示语法树" << endl;
+		else if (string(argv[1]) == "token") {
+			tokenOnly();
+		}
+		else if (string(argv[1]) == "-h"|| string(argv[1])=="help") {
+			cout << endl;
+			cout << "Usage: JSParser <command> \n\n"
+				<< "where <command> is one of:\n"
+				<< "	cli ,file, tree, token, help\n\n"
+				<< "cli  :  command line mode\n" 
+				<< "file :  read from script file [Usage: JSParser file filepath]\n"
+				<< "tree :  command line mode with printing the syntax tree\n"
+				<< "token:  only lexer works\n"
+				<< "help :  open help\n\n"
+				<< "ctrl+c exit the program"
+				<< endl;
 
 		}
 		else {
@@ -131,6 +121,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
+	//system("pause");
 	return 0;
 
 }

@@ -7,22 +7,27 @@
 1. 进入交互模式
 
 ```
->JSParser.exe
+>JSParser
 ```
 
 2. 进入交互模式并显示语法树
 ```
->JSParser.exe -t
+>JSParser tree
 ```
 
 3. 从外部文件读入代码并显示语法树
 ```
->JSParser.exe -f filepath
+>JSParser file filepath
 ```
 
-4. 打开帮助
+4. 仅进行词法分析
 ```
->JSParser.exe -h
+>JSParser token
+```
+
+5. 打开帮助
+```
+>JSParser help
 ```
 
 ## 支持语法
