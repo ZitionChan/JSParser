@@ -18,6 +18,8 @@ public:
 	void display(int layer = 1) {
 		cout << setw(layer * 2) << " " << "[NewExpression]:" << endl;
 
+		Node::display(layer);
+
 		cout << setw(layer * 2 + 2) << " " << "callee:" << endl;;
 		callee->display(layer + 2);
 

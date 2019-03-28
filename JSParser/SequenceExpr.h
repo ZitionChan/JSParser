@@ -17,6 +17,9 @@ public:
 
 	void display(int layer = 1) {
 		cout << setw(layer * 2) << " " << "[SequenceExpression]:" << endl;
+
+		Node::display(layer);
+
 		cout << setw(layer * 2 + 2) << " " << "expressions[" << expressions.size() << "]:" << endl;
 		for (int i = 0; i < expressions.size(); i++) {
 			expressions[i]->display(layer + 2);

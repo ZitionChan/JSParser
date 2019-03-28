@@ -22,4 +22,27 @@ public:
 			body[i]->display(layer+2);
 		}
 	}
+
+	void execute() {
+		//Ö´ÐÐ³ÌÐò
+		for (vector<Node*>::iterator iter = body.begin(); iter != body.end(); iter++) {
+			(*iter)->execute();
+		}
+	}
+
+	int totalExpr() {
+		int total = 0;
+		for (vector<Node*>::iterator iter = body.begin(); iter != body.end(); iter++) {
+			total += (*iter)->totalExpr();
+		}
+		return total;
+	}
+
+	int totalExeExpr() {
+		int total = 0;
+		for (vector<Node*>::iterator iter = body.begin(); iter != body.end(); iter++) {
+			total += (*iter)->totalExeExpr();
+		}
+		return total;
+	}
 };

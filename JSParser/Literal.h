@@ -19,4 +19,6 @@ public:
 		cout << setw(layer * 2+2) << " "<< "raw:" << raw << endl;
 		cout << setw(layer * 2 + 2) <<" "<<"value:"<< value << endl;
 	}
+
+	void execute(){}
 };

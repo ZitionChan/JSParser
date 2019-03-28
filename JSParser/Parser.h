@@ -75,6 +75,8 @@ public:
 	Parser(Lexer& l);
 
 	void run(); //开始解析
+	void execute();//执行语句
+	void report();//打印覆盖率
 	void display();
 	void singleLine(bool showTree = false);//单行模式
 };

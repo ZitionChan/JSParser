@@ -23,7 +23,7 @@ void ParserTest(Lexer &lexer) {
 }
 
 //从文件读取
-void readFile(string path) {
+void readFile(string path, bool exe=false) {
 
 	ifstream ifile(path);
 
@@ -38,7 +38,13 @@ void readFile(string path) {
 		catch (string err) {
 			cout << err << endl;
 		}
-		parser.display();
+
+		if (!exe)
+			parser.display();
+		else
+		 parser.execute();
+
+
 
 	}
 	else {
@@ -93,6 +99,15 @@ int main(int argc, char* argv[]) {
 				readFile(path);
 			}
 		}
+		else if (string(argv[1]) == "trace") {
+			if (argc == 2) {
+				cout << "Need a file path" << endl;
+			}
+			else {
+				string path = argv[2];
+				readFile(path,true);
+			}
+		}
 		else if (string(argv[1]) == "cli") {
 			interact();
 		}
@@ -106,9 +121,10 @@ int main(int argc, char* argv[]) {
 			cout << endl;
 			cout << "Usage: JSParser <command> \n\n"
 				<< "where <command> is one of:\n"
-				<< "	cli ,file, tree, token, help\n\n"
+				<< "	cli ,file, trace, tree, token, help\n\n"
 				<< "cli  :  command line mode\n" 
 				<< "file :  read from script file [Usage: JSParser file filepath]\n"
+				<< "trace:  trace the code and report the code coverage [Usage: JSParser trace filepath]\n"
 				<< "tree :  command line mode with printing the syntax tree\n"
 				<< "token:  only lexer works\n"
 				<< "help :  open help\n\n"

@@ -33,9 +33,10 @@ void Parser::singleLine(bool showTree) {
 	move();
 	Node* node = program();
 
-	if (node)
+	if (node) {
+		node->execute();
 		cout << node->getValue() << endl;
-
+	}
 	if (showTree) {
 		cout << endl;
 		node->display();
@@ -78,6 +79,25 @@ void Parser::run() {
 		Node* node = program();
 		if (node) top->append(node);
 	}
+}
+
+void Parser::execute() {
+	if (top) {
+		cout << "***********Code trace***********" << endl;
+		top->execute();
+		report();
+	}
+	else {
+		cout << " not parser tree exist" << endl;
+	}
+}
+
+void Parser::report() {
+	
+	cout << "\n*************Report*************" << endl;
+	cout << "Total executed expression: " << top->totalExeExpr() << endl;
+	cout << "Total expression: " << top->totalExpr() << endl;
+	cout << "Code coverage: " << double(top->totalExeExpr()) / top->totalExpr() * 100 << "%" << endl;
 }
 
 Node* Parser::program() {

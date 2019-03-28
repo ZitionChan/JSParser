@@ -16,11 +16,36 @@ public:
 
 	void display(int layer = 1) {
 		cout << setw(layer * 2) << " " << "[WhileStatement]:" << endl;
+
+		Node::display(layer);
+
 		cout << setw(layer * 2 + 2) << " " << "test:" << endl;
 		test->display(layer + 2);
 
 		cout << setw(layer * 2 + 2) << " " << "body:" << endl;
 		body->display(layer + 2);
 
+	}
+
+	void execute() {
+		Stmt::execute();
+		test->execute();
+		//判断分支是否执行
+		while(test->getValue() == true) {
+			body->execute();
+			test->execute();
+		}
+	}
+
+	string getName() {
+		return "while statement";
+	}
+
+	int totalExpr() {
+		return test->totalExpr() + body->totalExpr();
+	}
+
+	int totalExeExpr() {
+		return test->totalExeExpr() + body->totalExeExpr();
 	}
 };

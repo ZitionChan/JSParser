@@ -65,10 +65,27 @@ public:
 			cout << numberVal << endl;
 			break;
 		case bool_t:
-			cout << bool_t << endl;
+			cout << boolVal << endl;
 			break;
 		default:
 			break;
+		}
+	}
+
+	string toString() {
+		switch (type)
+		{
+		case string_t:
+			return stringVal;
+
+		case number_t:
+			return to_string(numberVal);
+
+		case bool_t:
+			return boolVal ? "true" : "false";
+
+		default:
+			return "";
 		}
 	}
 

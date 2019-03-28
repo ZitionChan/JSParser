@@ -12,8 +12,14 @@ public:
 	void display(int layer = 1) {
 		cout << setw(layer * 2) << " " << "[ReturnStatement]:" << endl;
 
+		Node::display(layer);
+
 		cout << setw(layer * 2 + 2) << " " << "argument:" << endl;
 		argument->display(layer + 2);
 
+	}
+
+	string getName() {
+		return "return " + argument->getName();
 	}
 };

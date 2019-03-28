@@ -17,9 +17,24 @@ public:
 
 	void display(int layer = 1) {
 		cout << setw(layer * 2) << " " << "[VariableDeclaration]:" << endl;
+
+		Node::display(layer);
+
 		cout << setw(layer * 2 + 2) << " " << "declarations[" << declarations.size() << "]:" << endl;
 		for (int i = 0; i < declarations.size(); i++) {
 			declarations[i]->display(layer + 2);
+		}
+	}
+
+	string getName() {
+		return "";
+	}
+
+	void execute() {
+		Stmt::execute();
+
+		for (vector<VariableDeclarator*>::iterator iter = declarations.begin(); iter != declarations.end(); iter++) {
+			(*iter)->execute();
 		}
 	}
 };

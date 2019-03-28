@@ -24,6 +24,9 @@ public:
 	void display(int layer=1) {
 		cout << setw(layer * 2) << " " << "[FunctionDeclaration]:" << endl;
 		
+		Node::display(layer);
+
+
 		cout << setw(layer * 2 + 2) << " " << "id:" << endl;
 		id->display(layer+2);
 		
@@ -44,5 +47,10 @@ public:
 		else {
 			cout << setw(layer * 2 + 4) << " " << "null" << endl;
 		}
+	}
+
+	void execute() {
+		Decl::execute();
+		body->execute();
 	}
 };

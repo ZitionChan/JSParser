@@ -7,6 +7,9 @@ public:
 
 	void display(int layer = 1) {
 		cout << setw(layer * 2) << " " << "[LogicExpression]:" << endl;
+
+		Node::display(layer);
+
 		cout << setw(layer * 2 + 2) << " " << "op:" << op->toString() << endl;
 		cout << setw(layer * 2 + 2) << " " << "left:" << endl;
 		left->display(layer + 2);
@@ -14,4 +17,5 @@ public:
 		right->display(layer + 2);
 		Expr::display(layer);
 	}
+
 };
